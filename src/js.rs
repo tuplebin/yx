@@ -44,27 +44,46 @@ fn write_json(buffer: &mut File, f: &Fun, s: &Sheet, pre: &str, is_last: bool) {
     }
 
     value_pos.sort();
-    let len = s.data.len()-1;
-    for idx in 0..len {
-        let data = s.data.get(idx).unwrap();
-        let args = meta::fun_key(&key_pos, &data);
-        if args.is_some() {
+
+    // 写第一行
+    let data = s.data.get(0).unwrap();
+    let args = meta::fun_key(&key_pos, &data);
+    if args.is_some() {
+        let k = args.unwrap();
+        if k.ne("\"\"") {
             let values = fun_value(&value_pos, s, &data);
-            buffer.write_fmt(format_args!("\t\t\"{}\": {},\n",  args.unwrap(), values)).unwrap();
+            if s.types[*key_pos[0]].eq("str") {
+                buffer.write_fmt(format_args!("\t\t{}: {}",  k, values)).unwrap();
+            } else {
+                buffer.write_fmt(format_args!("\t\t\"{}\": {}",  k, values)).unwrap();
+            }
         }
     }
 
-    let data = s.data.get(len).unwrap();
-    let args = meta::fun_key(&key_pos, &data);
-    if args.is_some() {
-        let values = fun_value(&value_pos, s, &data);
-        buffer.write_fmt(format_args!("\t\t\"{}\": {}\n",  args.unwrap(), values)).unwrap();
+    let len = s.data.len();
+    for idx in 1..len {
+        let data = s.data.get(idx).unwrap();
+        let args = meta::fun_key(&key_pos, &data);
+        if args.is_some() {
+            let k = args.unwrap();
+            if k.ne("\"\"") {
+                let values = fun_value(&value_pos, s, &data);
+                if s.types[*key_pos[0]].eq("str") {
+                    buffer.write_fmt(format_args!(",\n\t\t{}: {}", k, values)).unwrap();
+                } else {
+                    buffer.write_fmt(format_args!(",\n\t\t\"{}\": {}", k, values)).unwrap();
+                }
+            }
+            
+            
+            
+        }
     }
 
     if is_last {
-        buffer.write_fmt(format_args!("\t}}\n")).unwrap();
+        buffer.write_fmt(format_args!("\n\t}}\n")).unwrap();
     } else {
-        buffer.write_fmt(format_args!("\t}},\n")).unwrap();
+        buffer.write_fmt(format_args!("\n\t}},\n")).unwrap();
     }
     
 }
@@ -96,12 +115,14 @@ fn fun_value(value_pos: &Vec<&usize>, s: &Sheet, row: &Vec<String>) -> String{
 
 fn erl_value(sheet: &Sheet, row: &Vec<String>, index: usize) -> String {
     let cell = row.get(index).unwrap();
+    
     if cell.is_empty() || cell.eq("\"\"") {
         let d = match sheet.types[index].as_str() {
             "num" => "0",
             "term" => "[]",
-            _ => "<<>>",
+            _ => "\"\"",
         };
+        // println!("cell:{:?}", cell);
         d.to_string()
     }else{
         match sheet.types[index].as_str()  {
