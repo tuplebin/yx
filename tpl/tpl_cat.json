@@ -1,0 +1,45 @@
+{
+	"tpl_cat_combin": {
+		"20002": { "id": 20002, "loss_num": 10, "loss_other": [[19001, 1]], "gain": [[20003, 1]], "rand_list": [31]}
+	},
+	"tpl_cat_pos": {
+		"1": { "pos": 1, "name": "头", "name_key": "head"},
+		"2": { "pos": 2, "name": "躯干", "name_key": "body"},
+		"3": { "pos": 3, "name": "左手", "name_key": "leftHand"},
+		"4": { "pos": 4, "name": "右手", "name_key": "rightHand"},
+		"5": { "pos": 5, "name": "左脚", "name_key": "leftFoot"},
+		"6": { "pos": 6, "name": "右脚", "name_key": "rightFoot"}
+	},
+	"tpl_cat_advance": {
+		"1": { "level": 1, "crystal": 1, "crystalRate": 100, "card": 1, "cardRate": 100},
+		"2": { "level": 2, "crystal": 2, "crystalRate": 90, "card": 2, "cardRate": 100},
+		"3": { "level": 3, "crystal": 3, "crystalRate": 80, "card": 3, "cardRate": 100},
+		"4": { "level": 4, "crystal": 4, "crystalRate": 70, "card": 4, "cardRate": 100},
+		"5": { "level": 5, "crystal": 5, "crystalRate": 60, "card": 5, "cardRate": 100},
+		"6": { "level": 6, "crystal": 6, "crystalRate": 50, "card": 6, "cardRate": 100},
+		"7": { "level": 7, "crystal": 7, "crystalRate": 40, "card": 7, "cardRate": 80},
+		"8": { "level": 8, "crystal": 8, "crystalRate": 30, "card": 8, "cardRate": 60},
+		"9": { "level": 9, "crystal": 9, "crystalRate": 20, "card": 9, "cardRate": 40},
+		"10": { "level": 10, "crystal": 10, "crystalRate": 10, "card": 10, "cardRate": 20}
+	},
+	"tpl_cat_smelt": {
+		"rare": 1,
+		"num": 3,
+		"N": 20001,
+		"R": 20002,
+		"SR": 20003,
+		"SSR": 20004
+	},
+	"tpl_cat_talent": {
+		"10001": { "name": 10001, "commit": "受击时有20%几率自动反击，伤害降低50%，被反击技能攻击的目标不能发动反击"},
+		"10002": { "name": 10002, "commit": "受到反击后，防御增加10%"},
+		"10003": { "name": 10003, "commit": "每次攻击时，有50%几率增加1次攻击，触发时攻击伤害降低25%。"},
+		"10004": { "name": 10004, "commit": "受击时有20%几率将受到伤害的30%反馈给攻击目标，并免疫连击技能。"},
+		"10005": { "name": 10005, "commit": "受击时，有30%几率，免受所有暴击几率带来的暴击伤害"},
+		"10006": { "name": 10006, "commit": "增加暴击几率20%，增加暴击伤害25%"},
+		"10007": { "name": 10007, "commit": "每次攻击后，自身恢复对方受击血量的15%"},
+		"10008": { "name": 10008, "commit": "血量低于20%，免受嗜血技能效果。"},
+		"10009": { "name": 10009, "commit": "增加自身攻击属性25%"},
+		"10010": { "name": 10010, "commit": "提升自身30%防御属性"}
+	}
+}

@@ -25,16 +25,27 @@ pub fn handle(fname: &str, funs: &Vec<Fun>, sheet_map: &HashMap<String, Sheet>) 
     let erl: Vec<&Fun> = funs.iter().filter(|f| f.lang.contains("erl")).collect();
     match erl.len() {
         0 => (),
-        1 => buffer
-            .write_fmt(format_args!("\t{}/1\n", erl[0].fun))
-            .unwrap(),
+        // 1 => {
+        //     buffer
+        //         .write_fmt(format_args!("\t{}/1\n", erl[0].fun))
+        //         .unwrap();
+        //     buffer
+        //         .write_fmt(format_args!("\t,{}_keys/0\n", erl[0].fun))
+        //         .unwrap();
+        // }
         _ => {
             buffer
                 .write_fmt(format_args!("\t{}/1\n", erl[0].fun))
                 .unwrap();
+            buffer
+                .write_fmt(format_args!("\t,{}_keys/0\n", erl[0].fun))
+                .unwrap();
             for i in 1..erl.len() {
                 buffer
                     .write_fmt(format_args!("\t,{}/1\n", erl[i].fun))
+                    .unwrap();
+                buffer
+                    .write_fmt(format_args!("\t,{}_keys/0\n", erl[i].fun))
                     .unwrap();
             }
         }
@@ -73,7 +84,7 @@ fn write_erl(buffer: &mut File, f: &Fun, s: &Sheet) {
     }
 
     value_pos.sort();
-
+    let mut ks: Vec<String> = Vec::new();
     for data in &s.data {
         let args = meta::fun_key(&key_pos, &data);
         if args.is_some() {
@@ -82,23 +93,16 @@ fn write_erl(buffer: &mut File, f: &Fun, s: &Sheet) {
                 if s.types[*key_pos[0]].eq("str") {
                     k = format!("<<{}/utf8>>", k);
                 }
+                ks.push(k.clone());
                 let values = fun_value(&value_pos, s, &data);
                 match f.symbol.as_str() {
                     "=" => buffer
-                        .write_fmt(format_args!(
-                            "{}({}) -> {};\n",
-                            f.fun,
-                            k,
-                            values
-                        ))
+                        .write_fmt(format_args!("{}({}) -> {};\n", f.fun, k, values))
                         .unwrap(),
                     _ => buffer
                         .write_fmt(format_args!(
                             "{}(T) when T {} {} -> {};\n",
-                            f.fun,
-                            f.symbol,
-                            k,
-                            values
+                            f.fun, f.symbol, k, values
                         ))
                         .unwrap(),
                 }
@@ -108,6 +112,9 @@ fn write_erl(buffer: &mut File, f: &Fun, s: &Sheet) {
 
     buffer
         .write_fmt(format_args!("{}(_) -> {}.\n\n\n", f.fun, f.def_v))
+        .unwrap();
+    buffer
+        .write_fmt(format_args!("{}_keys() -> [{}].\n\n\n", f.fun, ks.join(",")))
         .unwrap();
 }
 
@@ -128,7 +135,12 @@ fn fun_value(value_pos: &Vec<&usize>, s: &Sheet, row: &Vec<String>) -> String {
         }
         value_str.push_str("}");
     } else {
-        value_str.push_str(first);
+        match s.types[*value_pos[0]].as_str() {
+            "term" => value_str.push_str(&format!("[{}]", first)),
+            "str" => value_str.push_str(&format!("<<{}/utf8>>", first)),
+            _ => value_str.push_str(first)
+        }
+        
     }
 
     value_str
